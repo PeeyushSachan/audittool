@@ -69,42 +69,74 @@
             <tr>
                 <td>2</td>
                 <td><input type="checkbox" onchange="updateFinalTotal()"></td>
-                <td>HTTPS Page Has Internal Links to HTTP: Fix Mixed Content</td>
-                <td><input type="text" value="25" readonly></td>
+                <td>Orphan Pages: Link to Them</td>
+                <td><input type="text" value="1" readonly></td>
                 <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
-                <td class="total">25</td>
+                <td class="total">1</td>
             </tr>
             <tr>
                 <td>3</td>
                 <td><input type="checkbox" onchange="updateFinalTotal()"></td>
-                <td>Missing Alt Tags: Add Alt Tags to Images</td>
-                <td><input type="text" value="10" readonly></td>
+                <td>Page Has Links to Broken Pages: Unlink Them</td>
+                <td><input type="text" value="1" readonly></td>
                 <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
-                <td class="total">10</td>
+                <td class="total">1</td>
             </tr>
             <tr>
                 <td>4</td>
                 <td><input type="checkbox" onchange="updateFinalTotal()"></td>
-                <td>Meta Description Tag Missing: Add Description</td>
-                <td><input type="text" value="2" readonly></td>
+                <td>Image Size Too Large: Compress Manually</td>
+                <td><input type="text" value="Free" readonly></td>
                 <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
-                <td class="total">2</td>
+                <td class="total">0</td>
             </tr>
             <tr>
                 <td>5</td>
                 <td><input type="checkbox" onchange="updateFinalTotal()"></td>
-                <td>Title Too Long: Edit to Make Short</td>
-                <td><input type="text" value="2" readonly></td>
+                <td>Page Has Links to Redirects: Correct Links</td>
+                <td><input type="text" value="1" readonly></td>
                 <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
-                <td class="total">2</td>
+                <td class="total">1</td>
             </tr>
             <tr>
                 <td>6</td>
                 <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Missing Alt Tags: Add Alt Tags to Images</td>
+                <td><input type="text" value="10" readonly></td>
+                <td><input type="number" value="25" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">250</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Meta Description Tag Missing: Add Description</td>
+                <td><input type="text" value="2" readonly></td>
+                <td><input type="number" value="2" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">4</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Title Too Long: Edit to Make Short</td>
+                <td><input type="text" value="2" readonly></td>
+                <td><input type="number" value="2" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">4</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>HTTPS Page Has Internal Links to HTTP: Fix Mixed Content</td>
+                <td><input type="text" value="25" readonly></td>
+                <td><input type="number" value="25" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">625</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
                 <td>H1 Tag Missing: Add H1 Tags</td>
                 <td><input type="text" value="2" readonly></td>
-                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
-                <td class="total">2</td>
+                <td><input type="number" value="2" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">4</td>
             </tr>
         </tbody>
         <tfoot>
@@ -123,7 +155,7 @@
     <script>
         function calculateTotal(input) {
             const row = input.closest('tr');
-            const price = parseFloat(row.cells[3].querySelector('input').value);
+            const price = parseFloat(row.cells[3].querySelector('input').value) || 0;
             const quantity = parseInt(input.value) || 0;
             const totalCell = row.querySelector('.total');
             totalCell.textContent = (price * quantity).toFixed(2);
