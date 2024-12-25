@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Audit Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e9ecef;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .totals {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>SEO Audit Tool</h1>
+    <table id="auditTable">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Select</th>
+                <th>Issue Description</th>
+                <th>Price ($)</th>
+                <th>Quantity</th>
+                <th>Total ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>404 & 4XX Pages: Redirect to Homepage</td>
+                <td><input type="text" value="10" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">10</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>HTTPS Page Has Internal Links to HTTP: Fix Mixed Content</td>
+                <td><input type="text" value="25" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">25</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Missing Alt Tags: Add Alt Tags to Images</td>
+                <td><input type="text" value="10" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">10</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Meta Description Tag Missing: Add Description</td>
+                <td><input type="text" value="2" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">2</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>Title Too Long: Edit to Make Short</td>
+                <td><input type="text" value="2" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">2</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td><input type="checkbox" onchange="updateFinalTotal()"></td>
+                <td>H1 Tag Missing: Add H1 Tags</td>
+                <td><input type="text" value="2" readonly></td>
+                <td><input type="number" value="1" min="1" oninput="calculateTotal(this)"></td>
+                <td class="total">2</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="totals">Subtotal ($):</td>
+                <td id="subtotal">0</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="totals">Final Total ($):</td>
+                <td id="finalTotal">0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <button class="btn" onclick="printPDF()">Print/Download PDF</button>
+
+    <script>
+        function calculateTotal(input) {
+            const row = input.closest('tr');
+            const price = parseFloat(row.cells[3].querySelector('input').value);
+            const quantity = parseInt(input.value) || 0;
+            const totalCell = row.querySelector('.total');
+            totalCell.textContent = (price * quantity).toFixed(2);
+            updateFinalTotal();
+        }
+
+        function updateFinalTotal() {
+            let subtotal = 0;
+            const rows = document.querySelectorAll('#auditTable tbody tr');
+            rows.forEach(row => {
+                const checkbox = row.cells[1].querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    const total = parseFloat(row.querySelector('.total').textContent) || 0;
+                    subtotal += total;
+                }
+            });
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('finalTotal').textContent = subtotal.toFixed(2);
+        }
+
+        function printPDF() {
+            const table = document.getElementById('auditTable');
+            const rows = table.rows;
+            let content = '<h1>SEO Audit Report</h1><table border="1" style="width: 100%; border-collapse: collapse;">';
+
+            // Generate rows for the table
+            for (let i = 0; i < rows.length; i++) {
+                const cols = rows[i].cells;
+                const checkbox = cols[1]?.querySelector('input[type="checkbox"]');
+
+                // Add the header or only checked rows
+                if (i === 0 || (checkbox && checkbox.checked)) {
+                    content += '<tr>';
+                    for (let j = 0; j < cols.length; j++) {
+                        if (j === 1) {
+                            // Show checkbox status (✔ for checked, blank otherwise)
+                            content += `<td>${checkbox && checkbox.checked ? '✔' : ''}</td>`;
+                        } else if (j === 3) {
+                            // Show Price column value
+                            const price = cols[j].querySelector('input')?.value || cols[j].innerText;
+                            content += `<td>${price}</td>`;
+                        } else if (j === 4) {
+                            // Show Quantity column value
+                            const quantity = cols[j].querySelector('input')?.value || cols[j].innerText;
+                            content += `<td>${quantity}</td>`;
+                        } else {
+                            // Default behavior for other columns
+                            content += `<td>${cols[j].innerText || cols[j].textContent}</td>`;
+                        }
+                    }
+                    content += '</tr>';
+                }
+            }
+
+            // Add the Final Total row at the end
+            const finalTotal = document.getElementById('finalTotal').textContent;
+            content += `
+                <tr>
+                    <td colspan="5" style="text-align: right; font-weight: bold;">Final Total ($):</td>
+                    <td>${finalTotal}</td>
+                </tr>
+            `;
+            content += '</table>';
+
+            // Open and print PDF
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<!DOCTYPE html><html><head><title>SEO Audit Report</title></head><body>${content}</body></html>`);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</body>
+</html>
